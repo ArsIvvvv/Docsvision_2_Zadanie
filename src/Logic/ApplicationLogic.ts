@@ -3,19 +3,16 @@ import { $MessageBox } from "@docsvision/webclient/System/$MessageBox";
 import { DateTimePicker } from "@docsvision/webclient/Platform/DateTimePicker";
 import { TextBox } from "@docsvision/webclient/Platform/TextBox";
 import { NumberControl } from "@docsvision/webclient/Platform/Number";
-import { TextareaControl } from "@docsvision/webclient/Legacy/TextareaControl";
 import { TextArea, TextAreaParams } from "@docsvision/webclient/Platform/TextArea";
 
 
 export class ApplicationLogic {
     
-    // ========== ЛОГИКА СОХРАНЕНИЯ ==========
     
     public async validateBeforeSave(layout: ILayout): Promise<boolean> {
     const messageBoxSvc = layout.getService($MessageBox);
     
     try {
-        // Проверяем контрол "Количество дней" на заполнение
         const daysControl = layout.controls.get<NumberControl>("KolDays");
         
         if (!daysControl) {
@@ -25,13 +22,13 @@ export class ApplicationLogic {
 
         const daysValue = daysControl.params.value;
         
-        // Проверяем, что поле заполнено (не null, не undefined и не 0)
+        
         if (daysValue === null || daysValue === undefined || daysValue === 0) {
             await messageBoxSvc.showWarning('Поле "Количество дней" обязательно для заполнения!');
-            return false; // Отменяем сохранение
+            return false; 
         }
 
-        // Дополнительная проверка: количество дней должно быть положительным
+      
         if (daysValue < 1) {
             await messageBoxSvc.showWarning('Количество дней должно быть больше 0!');
             return false;
@@ -70,7 +67,7 @@ export class ApplicationLogic {
             const startDateValue = startDateControl.value;
             const endDateValue = endDateControl.value;
 
-            // Если обе даты заполнены, проверяем корректность
+            
             if (startDateValue && endDateValue) {
                 const startDate = new Date(startDateValue);
                 const endDate = new Date(endDateValue);
@@ -78,7 +75,7 @@ export class ApplicationLogic {
                 if (endDate <= startDate) {
                     await messageBoxSvc.showError('Дата окончания должна быть больше даты начала!');
                     
-                    // Сбрасываем значение контрола, который вызвал изменение
+                    
                     sender.value = null;
                 }
             }
@@ -88,7 +85,7 @@ export class ApplicationLogic {
         }
     }
 
-    // ========== ЛОГИКА ОТОБРАЖЕНИЯ ИНФОРМАЦИИ ==========
+    
 
     public async showCardInfo(layout: ILayout): Promise<void> {
     if (!layout) { return; }
@@ -102,7 +99,6 @@ export class ApplicationLogic {
         const endDateControl = layout.controls.get<DateTimePicker>("EndDate");
         const reasonControl = layout.controls.get<TextArea>("Reason");
 
-        // Формируем строки информации
         const lines = [
             `Название карточки: ${documentNameControl?.params.value || 'Не указано'}`,
             `Дата создания: ${regDateControl?.params.value ? 
@@ -114,7 +110,6 @@ export class ApplicationLogic {
             `Основание для поездки: ${reasonControl.params.value || 'Не указано'}`
         ];
 
-        // Объединяем строки и показываем сообщение
         const message = lines.join('\n');
         await messageBoxSvc.showInfo(message, "Информация о командировке");
 
