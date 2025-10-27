@@ -4,20 +4,23 @@ import { $MessageBox } from "@docsvision/webclient/System/$MessageBox";
 import { IEventArgs } from "@docsvision/webclient/System/IEventArgs";
 import { DateTimePicker } from "@docsvision/webclient/Platform/DateTimePicker";
 import { NumberControl } from "@docsvision/webclient/Platform/Number";
+import { CancelableEventArgs } from "@docsvision/webclient/System/CancelableEventArgs";
+import { ICardSavingEventArgs } from "@docsvision/webclient/System/ICardSavingEventArgs";
 
 
-export async function ddApplication_OnSaving(sender: ILayout, args: IEventArgs): Promise<void> {
+export async function ddApplication_OnSaving(sender: ILayout, args: CancelableEventArgs<ICardSavingEventArgs>): Promise<void> {
     const logic = new ApplicationLogic();
     
     const isValid = await logic.validateBeforeSave(sender);
     if (!isValid) {
         
-        (args as any).savingCancelled = true;
+        args.cancel();
         return;
     }
-    
+     
     console.log('Карточка сохраняется...');
     await logic.sendSavingMsg(sender);
+    args.accept(); 
 }
 
 

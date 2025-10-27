@@ -3,7 +3,6 @@ define(['tslib', '@docsvision/webclient/System/$MessageBox', '@docsvision/webcli
     var ApplicationLogic = /** @class */ (function () {
         function ApplicationLogic() {
         }
-        // ========== ЛОГИКА СОХРАНЕНИЯ ==========
         ApplicationLogic.prototype.validateBeforeSave = function (layout) {
             return tslib.__awaiter(this, void 0, void 0, function () {
                 var messageBoxSvc, daysControl, daysValue, error_1;
@@ -26,7 +25,7 @@ define(['tslib', '@docsvision/webclient/System/$MessageBox', '@docsvision/webcli
                             return [4 /*yield*/, messageBoxSvc.showWarning('Поле "Количество дней" обязательно для заполнения!')];
                         case 4:
                             _a.sent();
-                            return [2 /*return*/, false]; // Отменяем сохранение
+                            return [2 /*return*/, false];
                         case 5:
                             if (!(daysValue < 1)) return [3 /*break*/, 7];
                             return [4 /*yield*/, messageBoxSvc.showWarning('Количество дней должно быть больше 0!')];
@@ -98,7 +97,6 @@ define(['tslib', '@docsvision/webclient/System/$MessageBox', '@docsvision/webcli
                             return [4 /*yield*/, messageBoxSvc.showError('Дата окончания должна быть больше даты начала!')];
                         case 4:
                             _a.sent();
-                            // Сбрасываем значение контрола, который вызвал изменение
                             sender.value = null;
                             _a.label = 5;
                         case 5: return [3 /*break*/, 8];
@@ -114,10 +112,9 @@ define(['tslib', '@docsvision/webclient/System/$MessageBox', '@docsvision/webcli
                 });
             });
         };
-        // ========== ЛОГИКА ОТОБРАЖЕНИЯ ИНФОРМАЦИИ ==========
         ApplicationLogic.prototype.showCardInfo = function (layout) {
             return tslib.__awaiter(this, void 0, void 0, function () {
-                var messageBoxSvc, documentNameControl, regDateControl, startDateControl, endDateControl, reasonControl, lines, message, error_3;
+                var messageBoxSvc, documentNameControl, regDateControl, startDateControl, endDateControl, reasonControl, cityControl, lines, message, error_3;
                 return tslib.__generator(this, function (_a) {
                     switch (_a.label) {
                         case 0:
@@ -133,6 +130,7 @@ define(['tslib', '@docsvision/webclient/System/$MessageBox', '@docsvision/webcli
                             startDateControl = layout.controls.get("StartDate");
                             endDateControl = layout.controls.get("EndDate");
                             reasonControl = layout.controls.get("Reason");
+                            cityControl = layout.controls.tryGet("City");
                             lines = [
                                 "\u041D\u0430\u0437\u0432\u0430\u043D\u0438\u0435 \u043A\u0430\u0440\u0442\u043E\u0447\u043A\u0438: " + ((documentNameControl === null || documentNameControl === void 0 ? void 0 : documentNameControl.params.value) || 'Не указано'),
                                 "\u0414\u0430\u0442\u0430 \u0441\u043E\u0437\u0434\u0430\u043D\u0438\u044F: " + ((regDateControl === null || regDateControl === void 0 ? void 0 : regDateControl.params.value) ?
@@ -141,7 +139,8 @@ define(['tslib', '@docsvision/webclient/System/$MessageBox', '@docsvision/webcli
                                     new Date(startDateControl.params.value).toLocaleDateString('ru-RU') : 'Не указана'),
                                 "\u0414\u0430\u0442\u0430 \u043F\u043E: " + ((endDateControl === null || endDateControl === void 0 ? void 0 : endDateControl.params.value) ?
                                     new Date(endDateControl.params.value).toLocaleDateString('ru-RU') : 'Не указана'),
-                                "\u041E\u0441\u043D\u043E\u0432\u0430\u043D\u0438\u0435 \u0434\u043B\u044F \u043F\u043E\u0435\u0437\u0434\u043A\u0438: " + (reasonControl.params.value || 'Не указано')
+                                "\u041E\u0441\u043D\u043E\u0432\u0430\u043D\u0438\u0435 \u0434\u043B\u044F \u043F\u043E\u0435\u0437\u0434\u043A\u0438: " + (reasonControl.params.value || 'Не указано'),
+                                "\u0413\u043E\u0440\u043E\u0434: " + ((cityControl === null || cityControl === void 0 ? void 0 : cityControl.params.value.name) || 'Не указан')
                             ];
                             message = lines.join('\n');
                             return [4 /*yield*/, messageBoxSvc.showInfo(message, "Информация о командировке")];
@@ -163,7 +162,6 @@ define(['tslib', '@docsvision/webclient/System/$MessageBox', '@docsvision/webcli
         return ApplicationLogic;
     }());
 
-    // ========== СОХРАНЕНИЕ КАРТОЧКИ ==========
     function ddApplication_OnSaving(sender, args) {
         return tslib.__awaiter(this, void 0, void 0, function () {
             var logic, isValid;
@@ -175,14 +173,14 @@ define(['tslib', '@docsvision/webclient/System/$MessageBox', '@docsvision/webcli
                     case 1:
                         isValid = _a.sent();
                         if (!isValid) {
-                            // Отменяем сохранение если проверка не пройдена
-                            args.savingCancelled = true;
+                            args.cancel();
                             return [2 /*return*/];
                         }
                         console.log('Карточка сохраняется...');
                         return [4 /*yield*/, logic.sendSavingMsg(sender)];
                     case 2:
                         _a.sent();
+                        args.accept();
                         return [2 /*return*/];
                 }
             });
@@ -203,7 +201,6 @@ define(['tslib', '@docsvision/webclient/System/$MessageBox', '@docsvision/webcli
             });
         });
     }
-    // ========== ОБРАБОТКА ДАТ ==========
     function ddDateRange_OnDateChange(sender, args) {
         return tslib.__awaiter(this, void 0, void 0, function () {
             var logic;
@@ -219,7 +216,6 @@ define(['tslib', '@docsvision/webclient/System/$MessageBox', '@docsvision/webcli
             });
         });
     }
-    // ========== КНОПКА ИНФОРМАЦИИ ==========
     function ddShowCardInfo_OnClick(sender, args) {
         return tslib.__awaiter(this, void 0, void 0, function () {
             var logic;
@@ -227,10 +223,8 @@ define(['tslib', '@docsvision/webclient/System/$MessageBox', '@docsvision/webcli
                 switch (_a.label) {
                     case 0:
                         logic = new ApplicationLogic();
-                        // Передаем layout вместо sender
                         return [4 /*yield*/, logic.showCardInfo(sender.layout)];
                     case 1:
-                        // Передаем layout вместо sender
                         _a.sent();
                         return [2 /*return*/];
                 }

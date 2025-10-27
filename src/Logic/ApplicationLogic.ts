@@ -4,6 +4,8 @@ import { DateTimePicker } from "@docsvision/webclient/Platform/DateTimePicker";
 import { TextBox } from "@docsvision/webclient/Platform/TextBox";
 import { NumberControl } from "@docsvision/webclient/Platform/Number";
 import { TextArea, TextAreaParams } from "@docsvision/webclient/Platform/TextArea";
+import { DirectoryDesignerRow } from "@docsvision/webclient/BackOffice/DirectoryDesignerRow";
+
 
 
 export class ApplicationLogic {
@@ -98,6 +100,7 @@ export class ApplicationLogic {
         const startDateControl = layout.controls.get<DateTimePicker>("StartDate");
         const endDateControl = layout.controls.get<DateTimePicker>("EndDate");
         const reasonControl = layout.controls.get<TextArea>("Reason");
+        const cityControl = layout.controls.tryGet<DirectoryDesignerRow>("City");
 
         const lines = [
             `Название карточки: ${documentNameControl?.params.value || 'Не указано'}`,
@@ -107,7 +110,8 @@ export class ApplicationLogic {
                 new Date(startDateControl.params.value).toLocaleDateString('ru-RU') : 'Не указана'}`,
             `Дата по: ${endDateControl?.params.value ? 
                 new Date(endDateControl.params.value).toLocaleDateString('ru-RU') : 'Не указана'}`,
-            `Основание для поездки: ${reasonControl.params.value || 'Не указано'}`
+            `Основание для поездки: ${reasonControl.params.value || 'Не указано'}`,
+            `Город: ${cityControl?.params.value.name|| 'Не указан'}`
         ];
 
         const message = lines.join('\n');
