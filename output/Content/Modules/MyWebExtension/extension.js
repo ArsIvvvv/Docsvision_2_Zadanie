@@ -1,4 +1,6 @@
-define(['tslib', '@docsvision/webclient/System/$MessageBox', '@docsvision/webclient/System/ExtensionManager'], (function (tslib, $MessageBox, ExtensionManager) { 'use strict';
+define(['@docsvision/web/core/services', 'tslib', '@docsvision/webclient/System/$MessageBox', '@docsvision/webclient/Generated/DocsVision.WebClient.Controllers', '@docsvision/webclient/System/ExtensionManager', '@docsvision/webclient/System/ControllerBase'], (function (services, tslib, $MessageBox, DocsVision_WebClient_Controllers, ExtensionManager, ControllerBase) { 'use strict';
+
+    var $OfficeService = services.serviceName(function (x) { return x.activityPlanService; });
 
     var ApplicationLogic = /** @class */ (function () {
         function ApplicationLogic() {
@@ -159,6 +161,78 @@ define(['tslib', '@docsvision/webclient/System/$MessageBox', '@docsvision/webcli
                 });
             });
         };
+        ApplicationLogic.prototype.onBusinessTripEmployeeChanged = function (sender, layout) {
+            return tslib.__awaiter(this, void 0, void 0, function () {
+                var messageBoxSvc, selectedEmployee, response, employeeControl, textControl, employeeController, managerInfo, error_4;
+                return tslib.__generator(this, function (_a) {
+                    switch (_a.label) {
+                        case 0:
+                            messageBoxSvc = layout.getService($MessageBox.$MessageBox);
+                            _a.label = 1;
+                        case 1:
+                            _a.trys.push([1, 7, , 9]);
+                            selectedEmployee = sender.params.value;
+                            if (!!(selectedEmployee === null || selectedEmployee === void 0 ? void 0 : selectedEmployee.id)) return [3 /*break*/, 3];
+                            return [4 /*yield*/, messageBoxSvc.showWarning('Сотрудник не выбран')];
+                        case 2:
+                            _a.sent();
+                            return [2 /*return*/];
+                        case 3: return [4 /*yield*/, layout.getService($OfficeService).ChangeManager({
+                                documentId: layout.cardInfo.id,
+                                employeeId: selectedEmployee.id
+                            })];
+                        case 4:
+                            response = _a.sent();
+                            employeeControl = layout.controls.get("staffDirectoryItems1");
+                            textControl = layout.controls.get("textBox2");
+                            employeeController = layout.getService(DocsVision_WebClient_Controllers.$EmployeeController);
+                            return [4 /*yield*/, employeeController.getEmployee(response.name, { isShowOverlay: false })];
+                        case 5:
+                            managerInfo = _a.sent();
+                            employeeControl.params.value = managerInfo;
+                            console.log(employeeControl.params.value);
+                            if (textControl) {
+                                textControl.params.value = response.phone.toString();
+                            }
+                            return [4 /*yield*/, messageBoxSvc.showInfo('Данные обновлены')];
+                        case 6:
+                            _a.sent();
+                            return [3 /*break*/, 9];
+                        case 7:
+                            error_4 = _a.sent();
+                            return [4 /*yield*/, messageBoxSvc.showError('Ошибка: ' + error_4.message)];
+                        case 8:
+                            _a.sent();
+                            return [3 /*break*/, 9];
+                        case 9: return [2 /*return*/];
+                    }
+                });
+            });
+        };
+        ApplicationLogic.prototype.onBusinessTripSumChanged = function (sender, layout) {
+            return tslib.__awaiter(this, void 0, void 0, function () {
+                var cityControl, daysControl, sumControl, selectedCity, daysCount, response;
+                return tslib.__generator(this, function (_a) {
+                    switch (_a.label) {
+                        case 0:
+                            cityControl = layout.controls.get("City");
+                            daysControl = layout.controls.get("KolDays");
+                            sumControl = layout.controls.get("number2");
+                            selectedCity = cityControl.params.value;
+                            daysCount = daysControl.params.value;
+                            console.log(selectedCity);
+                            return [4 /*yield*/, layout.getService($OfficeService).ChangeSum({
+                                    city: selectedCity.name,
+                                    days: daysCount
+                                })];
+                        case 1:
+                            response = _a.sent();
+                            sumControl.params.value = response.sum;
+                            return [2 /*return*/];
+                    }
+                });
+            });
+        };
         return ApplicationLogic;
     }());
 
@@ -231,21 +305,86 @@ define(['tslib', '@docsvision/webclient/System/$MessageBox', '@docsvision/webcli
             });
         });
     }
+    function ddChangeInfo_OnChangeManager(sender, args) {
+        return tslib.__awaiter(this, void 0, void 0, function () {
+            var logic;
+            return tslib.__generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0:
+                        logic = new ApplicationLogic();
+                        return [4 /*yield*/, logic.onBusinessTripEmployeeChanged(sender, sender.layout)];
+                    case 1:
+                        _a.sent();
+                        return [2 /*return*/];
+                }
+            });
+        });
+    }
+    function ddChangeInfo_OnChangeSum(sender, args) {
+        return tslib.__awaiter(this, void 0, void 0, function () {
+            var logic;
+            return tslib.__generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0:
+                        logic = new ApplicationLogic();
+                        return [4 /*yield*/, logic.onBusinessTripSumChanged(sender, sender.layout)];
+                    case 1:
+                        _a.sent();
+                        return [2 /*return*/];
+                }
+            });
+        });
+    }
 
     var ApplicationEventHandlers = /*#__PURE__*/Object.freeze({
         __proto__: null,
         ddApplication_OnSaving: ddApplication_OnSaving,
         ddApplication_OnSaved: ddApplication_OnSaved,
         ddDateRange_OnDateChange: ddDateRange_OnDateChange,
-        ddShowCardInfo_OnClick: ddShowCardInfo_OnClick
+        ddShowCardInfo_OnClick: ddShowCardInfo_OnClick,
+        ddChangeInfo_OnChangeManager: ddChangeInfo_OnChangeManager,
+        ddChangeInfo_OnChangeSum: ddChangeInfo_OnChangeSum
     });
+
+    var OfficeService = /** @class */ (function (_super) {
+        tslib.__extends(OfficeService, _super);
+        function OfficeService(service) {
+            var _this = _super.call(this, service) || this;
+            _this.service = service;
+            _this.controllerName = "Office";
+            return _this;
+        }
+        OfficeService.prototype.ChangeManager = function (model) {
+            return _super.prototype.doRequest.call(this, {
+                controller: this.controllerName,
+                action: "Change1",
+                isApi: true,
+                method: ControllerBase.HttpMethods.Post,
+                data: { model: model },
+                options: { isShowOverlay: true }
+            });
+        };
+        OfficeService.prototype.ChangeSum = function (model) {
+            return _super.prototype.doRequest.call(this, {
+                controller: this.controllerName,
+                action: "Change2",
+                isApi: true,
+                method: ControllerBase.HttpMethods.Post,
+                data: { model: model },
+                options: { isShowOverlay: true }
+            });
+        };
+        return OfficeService;
+    }(ControllerBase.ControllerBase));
 
     // Регистрация расширения
     ExtensionManager.extensionManager.registerExtension({
         name: "MyWebExtension",
         version: "1.0",
         globalEventHandlers: [ApplicationEventHandlers],
-        layoutServices: [],
+        layoutServices: [
+            services.Service.fromFactory($OfficeService, function (services) { return new OfficeService(services); }),
+        ],
         controls: []
     });
 

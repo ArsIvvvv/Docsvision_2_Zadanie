@@ -40,3 +40,13 @@ export async function ddShowCardInfo_OnClick(sender: any, args: IEventArgs): Pro
     const logic = new ApplicationLogic();
     await logic.showCardInfo(sender.layout);
 }
+
+export async function ddChangeInfo_OnChangeManager(sender: any, args: IEventArgs): Promise<void> {
+    const logic = new ApplicationLogic();
+    await logic.onBusinessTripEmployeeChanged(sender, sender.layout);
+}
+
+export async function ddChangeInfo_OnChangeSum(sender: any, args: IEventArgs): Promise<void> {
+    const logic = new ApplicationLogic();
+    await logic.onBusinessTripSumChanged(sender, sender.layout);
+}
