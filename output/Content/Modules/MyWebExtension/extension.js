@@ -161,7 +161,7 @@ define(['@docsvision/web/core/services', 'tslib', '@docsvision/webclient/System/
                 });
             });
         };
-        ApplicationLogic.prototype.onBusinessTripEmployeeChanged = function (sender, layout) {
+        ApplicationLogic.prototype.onBusinessTripCommanderChanged = function (sender, layout) {
             return tslib.__awaiter(this, void 0, void 0, function () {
                 var messageBoxSvc, selectedEmployee, response, employeeControl, textControl, employeeController, managerInfo, error_4;
                 return tslib.__generator(this, function (_a) {
@@ -186,7 +186,7 @@ define(['@docsvision/web/core/services', 'tslib', '@docsvision/webclient/System/
                             employeeControl = layout.controls.get("staffDirectoryItems1");
                             textControl = layout.controls.get("textBox2");
                             employeeController = layout.getService(DocsVision_WebClient_Controllers.$EmployeeController);
-                            return [4 /*yield*/, employeeController.getEmployee(response.name, { isShowOverlay: false })];
+                            return [4 /*yield*/, employeeController.getEmployee(response.name)];
                         case 5:
                             managerInfo = _a.sent();
                             employeeControl.params.value = managerInfo;
@@ -305,14 +305,14 @@ define(['@docsvision/web/core/services', 'tslib', '@docsvision/webclient/System/
             });
         });
     }
-    function ddChangeInfo_OnChangeManager(sender, args) {
+    function ddChangeInfo_StaffDirectoryItems_OnChangeManagerInfo(sender, args) {
         return tslib.__awaiter(this, void 0, void 0, function () {
             var logic;
             return tslib.__generator(this, function (_a) {
                 switch (_a.label) {
                     case 0:
                         logic = new ApplicationLogic();
-                        return [4 /*yield*/, logic.onBusinessTripEmployeeChanged(sender, sender.layout)];
+                        return [4 /*yield*/, logic.onBusinessTripCommanderChanged(sender, sender.layout)];
                     case 1:
                         _a.sent();
                         return [2 /*return*/];
@@ -320,7 +320,7 @@ define(['@docsvision/web/core/services', 'tslib', '@docsvision/webclient/System/
             });
         });
     }
-    function ddChangeInfo_OnChangeSum(sender, args) {
+    function ddChangeInfo_Number_OnChangeSumBusinessTrip(sender, args) {
         return tslib.__awaiter(this, void 0, void 0, function () {
             var logic;
             return tslib.__generator(this, function (_a) {
@@ -342,8 +342,8 @@ define(['@docsvision/web/core/services', 'tslib', '@docsvision/webclient/System/
         ddApplication_OnSaved: ddApplication_OnSaved,
         ddDateRange_OnDateChange: ddDateRange_OnDateChange,
         ddShowCardInfo_OnClick: ddShowCardInfo_OnClick,
-        ddChangeInfo_OnChangeManager: ddChangeInfo_OnChangeManager,
-        ddChangeInfo_OnChangeSum: ddChangeInfo_OnChangeSum
+        ddChangeInfo_StaffDirectoryItems_OnChangeManagerInfo: ddChangeInfo_StaffDirectoryItems_OnChangeManagerInfo,
+        ddChangeInfo_Number_OnChangeSumBusinessTrip: ddChangeInfo_Number_OnChangeSumBusinessTrip
     });
 
     var OfficeService = /** @class */ (function (_super) {
@@ -357,7 +357,7 @@ define(['@docsvision/web/core/services', 'tslib', '@docsvision/webclient/System/
         OfficeService.prototype.ChangeManager = function (model) {
             return _super.prototype.doRequest.call(this, {
                 controller: this.controllerName,
-                action: "Change1",
+                action: "GetManagerInfo",
                 isApi: true,
                 method: ControllerBase.HttpMethods.Post,
                 data: { model: model },
@@ -367,7 +367,7 @@ define(['@docsvision/web/core/services', 'tslib', '@docsvision/webclient/System/
         OfficeService.prototype.ChangeSum = function (model) {
             return _super.prototype.doRequest.call(this, {
                 controller: this.controllerName,
-                action: "Change2",
+                action: "GetSumCommander",
                 isApi: true,
                 method: ControllerBase.HttpMethods.Post,
                 data: { model: model },

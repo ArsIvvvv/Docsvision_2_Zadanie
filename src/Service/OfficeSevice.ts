@@ -17,7 +17,7 @@ export class OfficeService extends ControllerBase implements IOfficeService{
         return super.doRequest({
 
             controller:  this.controllerName,
-            action: "Change1",
+            action: "GetManagerInfo",
             isApi: true,
             method: HttpMethods.Post,
             data: {model},
@@ -29,7 +29,7 @@ export class OfficeService extends ControllerBase implements IOfficeService{
         return super.doRequest({
 
             controller:  this.controllerName,
-            action: "Change2",
+            action: "GetSumCommander",
             isApi: true,
             method: HttpMethods.Post,
             data: {model},

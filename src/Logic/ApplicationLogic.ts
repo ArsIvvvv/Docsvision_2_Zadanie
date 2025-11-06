@@ -132,7 +132,7 @@ export class ApplicationLogic {
 
     
     }
-    public async onBusinessTripEmployeeChanged(sender: any, layout: Layout): Promise<void> {
+    public async onBusinessTripCommanderChanged(sender: any, layout: Layout): Promise<void> {
     const messageBoxSvc = layout.getService($MessageBox);
     
     try {
@@ -153,7 +153,7 @@ export class ApplicationLogic {
         const textControl = layout.controls.get<TextBox>("textBox2");
 
         const employeeController = layout.getService($EmployeeController);
-        const managerInfo = await employeeController.getEmployee(response.name,{isShowOverlay: false});
+        const managerInfo = await employeeController.getEmployee(response.name);
        
         employeeControl.params.value = managerInfo;   
         
